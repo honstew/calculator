@@ -1,0 +1,405 @@
+#include<stdio.h>
+#include<Windows.h>
+#include<malloc.h>
+void gotoxy(int x, int y)
+{
+    COORD coord = {x, y};   
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+void printxy(int x,int y,char c[])
+{
+	gotoxy(x,y);
+	printf("%s",c);
+}
+
+void iniarray(char a[])
+{
+	int n;
+	for(n=0;n<strlen(a);n++)
+		a[n]=0;
+}
+
+
+float aux(char*s)
+{
+	float number[80],x=0,y=0,tem_y=1;
+	int len,i=0,j=0,k=0,l=0,count_r=0,count_l=0,tem_j,tem_k,tem_i;
+	char operat[80],s1[80];
+	len=strlen(s);
+	if(s[0]=='(')
+	{
+		while(1)
+		{
+			i++;
+			if(s[i]=='(')
+				count_l++;
+			s1[l]=s[i];			
+			l++;
+			if(s[i]==')')
+				count_r++;
+			if(s[i]==')'&&(count_l<count_r))
+				break;
+		}
+		s1[l-1]='\0';
+		tem_j=j;tem_k=k;tem_i=i;
+		number[tem_j]=aux(s1);
+		j=tem_j;
+		k=tem_k;
+		i=++tem_i;
+	} 
+	else
+	{
+		i=0;
+		for(;s[i]<='9'&&s[i]>='0';i++)
+			x=(s[i]-'0')+x*10;
+		if(s[i]=='.')
+			for(i++;s[i]<='9'&&s[i]>='0';i++)
+			{
+				y=(s[i]-'0')*0.1*tem_y+y;
+				tem_y=0.1*tem_y;
+			}
+		number[j]=x+y;
+	}	
+	j++;
+	for(;i<len;)
+	{
+		if(s[i]=='*')
+		{ 
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+				{
+					y=(s[i]-'0')*0.1*tem_y+y;
+					tem_y*=0.1;
+				}
+				number[j]=x+y;
+			}	
+			number[j-1]=number[j-1]*number[j];
+		}
+		if(s[i]=='/')
+		{ 
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+				{
+					y=(s[i]-'0')*0.1*tem_y+y;
+					tem_y*=0.1;
+				}
+					number[j]=x+y;
+				}
+			if(number[j]==0)
+			{
+				printf("\n\t\tThe operator is error!\n");
+				system("pause");
+				return 0;
+			}
+			number[j-1]=number[j-1]/number[j];
+		}	
+		if(s[i]=='+'||s[i]=='-')
+		{
+			operat[k]=s[i];
+			k++;
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=++tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+				{
+					y=(s[i]-'0')*0.1*tem_y+y;
+					tem_y*=0.1;
+				}
+				number[j]=x+y;
+				j++;
+			}
+		}
+	}
+	for(i=0;i<j+k;i++)
+	{	
+		if(operat[i] == '+')
+		{
+			number[0] += number[i+1];
+			continue;
+
+		}
+		if(operat[i]=='-')
+		{
+			number[0] -= number[i+1];
+			continue;
+		}
+	}
+	operat[0]=0;
+	return number[0];	
+}
+float muli(char s[])
+{ 
+	float number[80],x=0,y=0,tem_y=1;
+	int len,i=0,j=0,k=0,l=0,count_r=0,count_l=0,tem_j,tem_k,tem_i;
+	char operat[80],s1[80];
+	len=strlen(s);
+	if(s[0]=='(')
+	{
+		while(1)
+		{
+			i++;
+			if(s[i]=='(')
+				count_l++;
+			s1[l]=s[i];			
+			l++;
+			if(s[i]==')')
+				count_r++;
+			if(s[i]==')'&&(count_l<count_r||count_l==0))
+				break;			
+		}
+		s1[l-1]='\0';
+		tem_j=j;tem_k=k;tem_i=i;
+		number[tem_j]=aux(s1);
+		j=tem_j;
+		k=tem_k;
+		i=++tem_i;
+	} 
+	else
+	{
+		i=0;
+		for(;s[i]<='9'&&s[i]>='0';i++)
+			x=(s[i]-'0')+x*10;
+		if(s[i]=='.')
+			for(i++;s[i]<='9'&&s[i]>='0';i++)
+			{
+				y=(s[i]-'0')*0.1*tem_y+y;
+				tem_y*=0.1;
+			}	
+		number[j]=x+y;
+	}	
+	j++;
+	for(;i<len;)
+	{
+		if(s[i]=='*')
+		{ 
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;			
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+					for(i++;s[i]<='9'&&s[i]>='0';i++)
+					{
+						y=(s[i]-'0')*0.1*tem_y+y;
+						tem_y*=0.1;
+					}
+				number[j]=x+y;
+			}	
+			number[j-1]=number[j-1]*number[j];
+		}
+		if(s[i]=='/')
+		{ 
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+				{
+					y=(s[i]-'0')*0.1*tem_y+y;
+					tem_y*=0.1;
+				}
+				number[j]=x+y;
+			}
+			if(number[j]==0)
+			{
+				system("cls");
+				printf("\n\t\tThe operator is error!\n");
+				return -1;
+			}
+			number[j-1]=number[j-1]/number[j];
+		}	
+		if(s[i]=='+'||s[i]=='-')
+		{
+			operat[k]=s[i];
+			k++;
+			if(s[i+1]=='(')	
+			{
+				i++;
+				l=0;
+				count_l=count_r=0;
+				while(1)
+				{
+					i++;
+					if(s[i]=='(')
+						count_l++;
+					s1[l]=s[i];			
+					l++;
+					if(s[i]==')')
+						count_r++;
+					if(s[i]==')'&&(count_l<count_r||count_l==0))
+						break;
+				}
+				s1[l-1]='\0';
+				tem_j=j;tem_k=k;tem_i=i;
+				number[tem_j]=aux(s1);
+				j=++tem_j;
+				k=tem_k;
+				i=++tem_i;			
+			}
+			else
+			{
+				x=0;y=0;tem_y=1;
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+					x=(s[i]-'0')+x*10;
+				if(s[i]=='.')
+				for(i++;s[i]<='9'&&s[i]>='0';i++)
+				{
+					y=(s[i]-'0')*0.1*tem_y+y;
+					tem_y*=0.1;
+				}
+				number[j]=x+y;
+				j++;
+			}
+		}
+	}
+	for(i=0;i<j+k;i++)
+	{		
+		if(operat[i] == '+')
+		{
+			number[0] += number[i+1];
+			continue;
+
+		}
+		if(operat[i]=='-')
+		{
+			number[0] -= number[i+1];
+			continue;
+		}
+	}
+	return number[0];	
+}
